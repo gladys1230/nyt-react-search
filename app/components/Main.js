@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import Search from './children/search.js';
-import Results from './children/results.js';
-import Saved from './children/saved.js';
-import helpers from './utils/helpers.js';
+import React, { Component } from 'react';
+import Search from './children/search';
+import Results from './children/results';
+import Saved from './children/saved';
+import helpers from './utils/helpers';
 
 class Main extends Component {
   constructor(){
@@ -19,7 +19,7 @@ class Main extends Component {
     if(!this.state.res){
       helpers.fetchData(this.state.query, this.state.startDate, this.state.endDate).then(function(data){
         console.log(data);
-        this.setState({res: data});
+         this.setState({res: data});
       }.bind(this));
     }
   }

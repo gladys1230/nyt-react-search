@@ -1,11 +1,27 @@
-import React, {Component} from "react";
-import SearchResult from "./grandchildren/SearchResult.js";
+import React, { Component } from "react";
+import SearchResult from "./grandchildren/SearchResult";
 
 class Results extends Component{
 
 	showResults(){
+
 		if(this.props.res){
-			return this.props.res.map((x, i) => <SearchResult key={i} title={x.headline.main} p={x.lead_paragraph} link={x.web_url} saved={false}/>);
+
+			return (<div> { this.props.res.map((x, i) => <div>{x.web_url}</div>)
+			}
+			</div>)
+		}
+
+		if(this.props.res){
+
+
+			return (<div> { this.props.res.map((x, i) => 
+				<SearchResult key={i} 
+				title={x.headline.main} 
+				p={x.lead_paragraph} 
+				link={x.web_url} 
+				saved={false}/>)}
+			</div>)
 		}
 		return "Search results will be displayed here."
 	}
