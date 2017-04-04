@@ -1,34 +1,29 @@
-var React = require("react");
+import React, {Component} from "react";
+import SearchResult from "./grandchildren/SearchResult.js";
 
-var helpers = require("./../utils/helpers.js");
+class Results extends Component{
 
-var saveArticle = function(search, i){
-	var article = search;
+	showResults(){
+		if(this.props.res){
+			return this.props.res.map((x, i) => <SearchResult key={i} title={x.headline.main} p={x.lead_paragraph} link={x.web_url} saved={false}/>);
+		}
+		return "Search results will be displayed here."
+	}
 
-	helpers.saveArticle(article, i);
+	render(){
+		return (
+			<div className="panel panel-default">
+  			  <div className="panel-heading">
+    			<h3 className="panel-title text-center">Results</h3>
+  			  </div>
+  			  <div className="panel-body">
+    			<div id="searchResults" className="containter">
+    				{this.showResults()}
+    			</div>
+  			  </div>
+			</div>
+		)
+	}
 }
 
-var Results = React.createClass({
-	render: function(){
-		return(
-			<div className ="panel panel-info">
-			<div classname ="panel-heading">
-			<h3 className ="panel-title text center">Results</h3>
-			</div>
-			<div className ="panel-body text-center">
-			{this.props.results.map(function(search, i){
-				var boundClick = saveArticle.bind(this, search, i);
-
-				return<div key={i}>
-				<p>{search.headline.main}</p>
-				<button type = "button" className="btn btn-primary" onClick={boundClick}>Save</button>
-				<br/>
-				<br/>
-				</div>
-			})}
-			</div>
-			</div>
-			)
-	}
-});
 module.exports = Results;

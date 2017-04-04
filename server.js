@@ -1,64 +1,49 @@
 //dependencies
 var express = require("express");
-var bodyParser = require("body-parser");
-var logger = require("morgan");
 var mongoose = require("mongoose");
 
-var Article = require("./models/articles.js");
-
-var app = express();
-var PORT = process.env.PORT || 3000;
-
-app.use(logger("dev"));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.text());
-app.use(bodyParser.json({ type: "application/vnd.api+json" }));
-
-app.use(express.static("./public"));
-
+mongoose.Promise = Promise;
 mongoose.connect("mongodb://localhost/hw19nytreact");
 var db = mongoose.connection;
 
-db.on("error", function(err) {
-    console.log("Mongoose Error", err);
+//show any mongoose errors
+db.on("error", function(error){
+    console.log("Mongoose Error Message: ", error);
 });
+
+//once logged in to db through mongoose, log a success message
 
 db.once("open", function() {
     console.log("YEAH!!! Mongoose connection successful.");
 });
 
-app.get("/", function(req, res) {
-    res.sendFile("./public/index.html");
-});
 
-app.get("/api/", function(req, res) {
-    Article.find({})
-        .exec(function(err, doc) {
-            if (err) {
-                console.log(err);
-            } else {
-                res.send(doc);
-            }
-        })
-});
+//initialize express app
+var app = express();
 
-app.post("/api", function(req, res) {
-    Article.create({
-            "title": req.body.headline.main,
-            "url": req.body.web_url,
-            "date": Date.now()
-        },
-        function(err) {
-            if (err) {
-                console.log("err");
-            }else
-            {
-            	console.loc("search is saved!");
-        }
-    })
-});
 
-app.listen(PORT, function(){
-	console.log("Listening on port: " + PORT);
+//body-parser
+var bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: false}));
+
+//set up Express Router
+var router = express.Router();
+
+//require routes file pass router obj
+require("./config/expressRoutes")(router);
+
+app.use(router);
+
+//requireing models
+var Note = require("./models/Note.js");
+var Article = require("./models/Article.js");
+
+//declare port
+var port = process.env.PORT || 3000;
+
+
+app.use(express.static(process.cwd() + "/public"));
+
+app.listen(port, function(){
+	console.log("Listening on port: " + port + "!");
 });

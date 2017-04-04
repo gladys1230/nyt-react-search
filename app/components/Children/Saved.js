@@ -1,25 +1,22 @@
-var React = require("react");
+import React, {Component} from "react";
 
-var Saved = React.createClass({
-	render: function(){
+class Saved extends Component{
+	constructor(){
+		super();
+	}
+
+	render(){
 		return(
-			<div className="panel panel-info">
+			<div className="panel panel-default">
 			<div className="panel-heading">
-			<h3 className="panel-title text-center">Articles Saved</h3>
+			<h3 className="panel-title text-center">Saved Articles</h3>
 			</div>
-			<div className="panel-body text-center">
-
-			{this.props.saved.map(function(serarch, i){
-				return(
-					<div>
-					<p nytKey={i}>{search.title}<a href={search.url}> link here</a></p>
-					</div>)
-			}
-			)}
-			</div>
+			<div className="panel-body">Saved articles displays here:
 			</div>
 
+			</div>
 			)
 	}
-});
+}
+
 module.exports = Saved;

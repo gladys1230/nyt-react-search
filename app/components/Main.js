@@ -1,88 +1,55 @@
-var React = require("react");
+import React, {Component} from 'react';
+import Search from './children/search.js';
+import Results from './children/results.js';
+import Saved from './children/saved.js';
+import helpers from './utils/helpers.js';
 
-var Form = require("./Children/Form");
-var Results = require("./Children/Results");
-var Saved = require("./Children/Saved");
-var helpers = require("./utils/helpers.js");
+class Main extends Component {
+  constructor(){
+    super();
+    this.state = {query: '', startDate: '', endDate: '', res: null};
 
-var Main = React.createClass({
-            getInitialState: function() {
-                return {
-                    searchTerm: "",
-                    startYear: "",
-                    endYear: "",
-                    results: [],
-                    saved: []
-                }
-            },
+    this.setQuery = this.setQuery.bind(this);
+    this.setStart = this.setStart.bind(this);
+    this.setEnd = this.setEnd.bind(this);
+    this.resetRes = this.resetRes.bind(this);
+  }
 
-            setSearch: function(search, startYear, endYear) {
-                this.setState({
-                    searchTerm: search,
-                    startYear: startYear,
-                    endYear: endYear
-                })
-            },
+  componentDidUpdate() {
+    if(!this.state.res){
+      helpers.fetchData(this.state.query, this.state.startDate, this.state.endDate).then(function(data){
+        console.log(data);
+        this.setState({res: data});
+      }.bind(this));
+    }
+  }
 
-            updateSaved: function(saved) {
-                console.log("going through the updateSaved");
-                helpers.getSaved()
-                    .then(function(response) {
-                        if (response != this.state.saved) {
-                            console.log("componentDidMount");
-                            console.log("History", response);
-                            this.setState({
-                                saved: response
-                            })
-                        }
-                    }.bind(this))
-            },
+  setQuery(query){
+    this.setState({ query: query });
+  }
 
-            componentDidMount: function(prevProp, prevState) {
-                if (prevState.save != this.state.saved || prevState.searchTerm != this.state.searchTerm || prevState.startYear != prevState.endYear) {
-                    console.log("update to search");
+  setStart(start){
+    this.setState({ startDate: start });
+  }
 
-                    if (prevState.searchTerm != this.state.searchTerm || prevState.startYear != this.state.startYear || prevState.endYear != this.state.endYear) {
-                        helpers.runQuery(this.state.searchTerm, this.state.startYear, this.state.endYear)
-                            .then(function(data) {
-                                if (data != this.state.results) {
-                                    console.log("Getting new data");
-                                    this.setState({
-                                        results: data
-                                    })
-                                }
-                            }.bind(this))
-                    } else if (prevState.saved != this.state.saved) {
-                        console.log("checking for saved articles");
-                    }
-                }
-            },
-            componentDidMount: function() {
-                //get latest saved data
-                helpers.getSaved()
-                    .then(function(response) {
-                        if (response != this.state.saved) {
-                            console.log("componentDidMount");
-                            console.loc("history", response);
-                            this.setState({
-                                saved: response
-                            })
-                        }
-                    }.bind(this))
-            },
-            render: function() {
-                return ( < div className = "container" >
-                    < div className = "col-md-12" >
-                    < Form setSearch = { this.setSearch }
-                    /> < /div> < div className = "col-md-12" >
-                    < Results resulte = { this.state.results }
-                    updateSaved = { this.updateSaved }
-                    /> < /div> < div className = "col-md-12" >
-                    < Saved saved = { this.state.saved }/> 
-                    </div>
-                  </div>
-                  )
-                }
-            })
+  setEnd(end){
+    this.setState({ endDate: end });
+  }
 
-            module.exports = Main;
+  resetRes(){
+    this.setState({res: null});
+  }
+
+  render() {
+    return (
+      <div className="container">
+        <Search resetRes={this.resetRes} setQuery={this.setQuery} setStart={this.setStart} setEnd={this.setEnd} />
+        <Results res={this.state.res} />
+        <Saved />
+      </div>
+    )
+  }
+
+}
+
+module.exports = Main;
