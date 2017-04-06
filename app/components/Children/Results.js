@@ -1,45 +1,45 @@
-import React, { Component } from "react";
-import SearchResult from "./grandchildren/SearchResult";
+//include React
+var React = require("react");
 
-class Results extends Component{
-
-	showResults(){
-
-		if(this.props.res){
-
-			return (<div> { this.props.res.map((x, i) => <div>{x.web_url}</div>)
-			}
-			</div>)
+//Component createion
+var Results = React.createClass({
+	getInitialState: function(){
+		return{
+			title: "",
+			date: "",
+			url: "",
+			results: []
 		}
+	},
 
-		if(this.props.res){
+	//when user clicks save article
+	clickToSave: function(result){
+		this.props.saveArticle(result.headline.main, result.pub_date, result.web_url);
+	},
 
+	componentWillReceiveProps: function(nextProps){
+		var that = this;
+		var myResults = nextProps.results.map(function(search, i){
+			var boundClick = that.clickToSave.bind(this, search);
+			return <div className="list-group-item" key={i}><a href={search.web_url} target="_blank">{search.headline.main}</a><br />{search.pub_date}<br /><button type="button" className="btn btn-warning" style={{'float': 'right', 'marginTop': '-39px'}} onClick={boundClick}>Save</button></div>
+		});
+		this.setState({results: myResults});
+	},
 
-			return (<div> { this.props.res.map((x, i) => 
-				<SearchResult key={i} 
-				title={x.headline.main} 
-				p={x.lead_paragraph} 
-				link={x.web_url} 
-				saved={false}/>)}
-			</div>)
-		}
-		return "Search results will be displayed here."
-	}
-
-	render(){
-		return (
-			<div className="panel panel-default">
-  			  <div className="panel-heading">
-    			<h3 className="panel-title text-center">Results</h3>
-  			  </div>
-  			  <div className="panel-body">
-    			<div id="searchResults" className="containter">
-    				{this.showResults()}
-    			</div>
-  			  </div>
+	//render function
+	render: function(){
+		return(
+			<div className = "panel panel-warning">
+			 <div className = "panel-heading">
+			 	<h3 className = "panel-title text-center"><strong>Results</strong></h3>
+			 </div>
+			 <div className ="panel-body">
+			 	{this.state.results}
+			 </div>
 			</div>
-		)
+			)
 	}
-}
+});
 
+//export the component back to other files for use
 module.exports = Results;
