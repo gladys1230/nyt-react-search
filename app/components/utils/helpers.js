@@ -20,7 +20,7 @@ var helpers = {
         //get first 10 articles that have all 3 components
         for(var i = 0; i < fullResults.length; i++){
           if(counter > 9){
-            return rewResults;
+            return newResults;
           }
           if(fullResults[counter].headline.main && fullResults[counter].pub_date && fullResults[counter].web_url){
             newResults.push(fullResults[counter]);
